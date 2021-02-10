@@ -64,8 +64,6 @@ function onDelete(ev, id) {
 
 
 // CANVAS
-
-
 function placeLineModal() {
     var line = getSelectedLine()
     var elModal = document.querySelector('.line-modal')
