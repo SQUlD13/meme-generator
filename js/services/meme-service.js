@@ -91,6 +91,8 @@ function deleteMemeByID(id) {
 function addMeme(data) {
     if (gMeme.selectedLineIdx >= 0 && gMeme.selectedImgId >= 0) {
         var meme = createMeme()
+        meme.selectedImgId = gMeme.selectedImgId
+        meme.selectedLineIdx = gMeme.selectedLineIdx
         meme.imgData = data
         gMemes.push(meme)
     }

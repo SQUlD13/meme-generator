@@ -25,6 +25,7 @@ function onInit() {
 function onFontSizeChange(sizeDiff) {
     var line = getSelectedLine()
     line.size += sizeDiff
+    document.querySelector('.line-modal').fontSize = line.size
     drawCanvas()
 }
 function onVertLineMove(moveDiff) {
@@ -67,8 +68,8 @@ function onDelete(ev, id) {
 function placeLineModal() {
     var line = getSelectedLine()
     var elModal = document.querySelector('.line-modal')
-    elModal.innerHTML = line.text
-    elModal.style = ` left: ${gElCanvas.offsetLeft + line.x}px;top: calc( ${gElCanvas.offsetTop + line.y}px); font-family:${line.font};`
+    elModal.children[0].innerHTML = line.text
+    elModal.style = ` left: ${gElCanvas.offsetLeft + line.x}px;top: calc( ${gElCanvas.offsetTop + line.y}px); font-family:${line.font}; font-size:${line.size}px;`
 }
 function setMemeToCanvas(id) {
     var meme = getMemeByID(id)
@@ -180,42 +181,54 @@ function addListeners() {
     addMouseListeners()
     //addTouchListeners()
     window.addEventListener('resize', () => {
-        //resizeCanvas()
-        //clearCanvas()
+        resizeCanvas()
+        drawCanvas()
         placeLineModal()
     })
 }
 function addMouseListeners() {
-    var elModal = document.querySelector('.line-modal')
-    elModal.addEventListener('mousemove', onMove)
-    elModal.addEventListener('mousedown', onDown)
-    elModal.addEventListener('mouseup', onUp)
+    gElCanvas.addEventListener('mousemove', onMove)
+    gElCanvas.addEventListener('mousedown', onDown)
+    gElCanvas.addEventListener('mouseup', onUp)
 }
 
 function addTouchListeners() {
-    var elModal = document.querySelector('.line-modal')
-    elModal.addEventListener('touchmove', onMove)
-    elModal.addEventListener('touchstart', onDown)
-    elModal.addEventListener('touchend', onUp)
+    gElCanvas.addEventListener('touchmove', onMove)
+    gElCanvas.addEventListener('touchstart', onDown)
+    gElCanvas.addEventListener('touchend', onUp)
 }
 
 function onDown(ev) {
-    const pos = getEvPos(ev)
-    gLastPos = pos;
+    //const pos = getEvPos(ev)
     if (gIsDragging) return
-    var elModal = ev.target
-    gIsDragging = true
-    console.log('Beginning drag!')
+    var elText = document.querySelector('.line-modal-content')
+
+    var rect = elText.getBoundingClientRect()
+    if (ev.pageX > rect.x && ev.pageX < rect.x + rect.width && ev.pageY > rect.y && ev.pageY < rect.y + rect.height) {
+        gLastPos = { x: ev.pageX, y: ev.pageY };
+        gIsDragging = true
+        console.log('Beginning drag!')
+    }
 }
 
 function onMove(ev) {
     if (gIsDragging) {
-        const pos = getEvPos(ev)
+        //const pos = getEvPos(ev)
+        console.log('dragging')
+        //var { x, y } = pos
+        var { x, y } = { x: ev.pageX, y: ev.pageY }
+        var dX = x - gLastPos.x
+        var dY = y - gLastPos.y
 
-        gLastPos = pos
+        var line = getSelectedLine()
+        line.x += dX; line.y += dY;
+        drawCanvas()
+        placeLineModal()
+        gLastPos = { x: ev.pageX, y: ev.pageY }
     }
 }
 
 function onUp() {
     gIsDragging = false
+    console.log('Stopping drag')
 }
