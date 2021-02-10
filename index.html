@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Meme Generator</title>
+</head>
+
+<body onload="onInit()">
+    <header>
+        <div class="main-container flex space-between align-center margin-auto">
+            <div class="logo">
+                <h1>Maymay</h1>
+            </div>
+            <nav>
+                <ul class="clean-list inline-flex">
+                    <li><a class="center" href="#editor">Editor</a></li>
+                    <li><a class="center" href="#saved-image-gallery">Gallery</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <section class="search">
+        <div class="search-bar-container margin-auto">
+            <form class="flex" onsubmit="onSearch()">
+                <input type="text" name="search-bar" id="search-bar" placeholder="Search...">
+                <button class="btn search-btn mi mi-search"></button>
+            </form>
+        </div>
+    </section>
+    <section id="editor" class="meme-editor margin-auto flex">
+
+        <div class="canvas-container flex justify-center flex-1">
+            <div class="line-modal"></div>
+            <canvas id="image-canvas" width="400" height="400"></canvas>
+        </div>
+        <div class="controls flex column flex-1 align-center">
+            <input class="controls-row flex-1margin-auto" type="text" name="text-input" id="text-input"
+                placeholder="Text line" oninput="onTextInput(this)">
+            <div class="controls-row flex flex-1 space-between">
+                <div class="control-group flex flex-1 space-evenly align-center">
+                    <button class="btn control-btn center" onclick="onToggleLine()">
+                        <img class="icon-image" src="../src/img/icons/vert-arrows.png" alt="swap lines">
+                    </button>
+                    <button class="btn control-btn center" onclick="onAddLine()">
+                        <img class="icon-image" src="../src/img/icons/add.png" alt="swap lines">
+                    </button>
+                    <button class="btn control-btn center" onclick="onDeleteLine()">
+                        <img class="icon-image" src="../src/img/icons/trash.png" alt="swap lines">
+                    </button>
+                </div>
+            </div>
+            <div class="controls-row flex flex-1 space-between">
+                <div class="control-group inline-flex flex-1 space-evenly">
+                    <!-- <div class="mi mi-format-size"></div> -->
+                    <button class="btn control-btn center" onclick="onFontSizeChange(+2)">
+                        <img class="icon-image" src="../src/img/icons/increase-font.png" alt="increase font size">
+                    </button>
+                    <button class="btn control-btn center" onclick="onFontSizeChange(-2)">
+                        <img class="icon-image" src="../src/img/icons/decrease-font.png" alt="decrease font size">
+                    </button>
+                </div>
+                <div class="control-group inline-flex flex-1 space-evenly">
+                    <button class="btn control-btn center mi mi-up" onclick="onVertLineMove(-10)"></button>
+                    <button class="btn control-btn center mi mi-down" onclick="onVertLineMove(+10)"></button>
+                </div>
+            </div>
+            <div class="controls-row flex flex-1 justify-end">
+                <button class="btn save-btn" onclick="onSave()">Save</button>
+            </div>
+        </div>
+    </section>
+    <section class="image-gallery main-container margin-auto"></section>
+    <section id="saved-image-gallery" class="image-gallery"></section>
+
+    <script src="js/services/util-service.js"></script>
+    <script src="js/services/storage-service.js"></script>
+    <script src="js/services/meme-service.js"></script>
+    <script src="js/services/editor-service.js"></script>
+    <script src="js/index-controller.js"></script>
+</body>
+
+</html>
