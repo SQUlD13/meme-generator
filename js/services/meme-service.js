@@ -30,8 +30,8 @@ const DEFAULT_LINES = [{
     outlineWidth: 2,
     outlineColor: 'black',
     font: 'Impact',
-    x: 200,
-    y: 45,
+    x: 0.5,
+    y: 0.2,
 },
 {
     text: 'Enter text here',
@@ -42,8 +42,8 @@ const DEFAULT_LINES = [{
     outlineWidth: 2,
     outlineColor: 'black',
     font: 'Impact',
-    x: 200,
-    y: 365,
+    x: 0.5,
+    y: 0.9,
 }]
 const STORAGE_KEY = 'memesDB'
 
@@ -61,6 +61,12 @@ var gMemes
 
 function updateMemeText(text) {
     gMeme.lines[gMeme.selectedLineIdx].text = text
+}
+function updateLineLocation(lineIdx, x, y) {
+    gMeme.lines[lineIdx].x = x; gMeme.lines[lineIdx].y = y;
+}
+function setMemeSelectedLine(lineIdx) {
+    gMeme.selectedLineIdx = lineIdx
 }
 function setMemePicture(id) {
     gMeme.selectedImgId = id
@@ -112,11 +118,9 @@ function createMeme(lines = []) {
         selectedImgId: 0,
         lines: DEFAULT_LINES
     }
-    if (lines.length > 0) {
-        meme.lines = lines
-    }
     return meme
 }
+
 
 function saveMemes() {
     saveToStorage(STORAGE_KEY, gMemes)

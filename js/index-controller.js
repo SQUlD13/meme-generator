@@ -49,6 +49,7 @@ function onTextInput(elTextInput) {
 //EVENTS
 function onImgSelect(imgIdx) {
     setMemePicture(imgIdx)
+    showLineModal()
     drawCanvas()
 }
 function onSave() {
@@ -63,14 +64,72 @@ function onDelete(ev, id) {
     renderSavedImages()
 }
 
+function onDown(ev) {
+    const pos = getEvPos(ev)
+    if (gIsDragging) return
+    var elText = document.querySelector('.line-modal-content')
+    //var text = elText.innerHTML
+    var line = findClickedLine(ev)
+    console.log("🚀 ~ file: index-controller.js ~ line 73 ~ onDown ~ line", line)
+    if (line) {
+        console.log('clicked in line', line)
+        gLastPos = pos
+        gIsDragging = true
+    }
+    // var rect = elText.getBoundingClientRect()
+    // if (ev.pageX > rect.x && ev.pageX < rect.x + rect.width && ev.pageY > rect.y && ev.pageY < rect.y + rect.height) {
+    //     gLastPos = { x: ev.pageX, y: ev.pageY };
+    //     gIsDragging = true
+    //     console.log('Beginning drag!')
+    // }
+}
+
+function findClickedLine(ev) {
+    var meme = getMeme()
+    var elText = document.querySelector('.line-modal-content')
+    var textContent = elText.innerHTML
+    const pos = getEvPos(ev)
+    for (let i = 0; i < meme.lines.length; i++) {
+        var line = meme.lines[i]
+        elText.innerHTML = line.text
+        var rect = elText.getBoundingClientRect()
+        var halfRectWidth = (rect.width / gElCanvas.width) / 2
+        if (pos.x > line.x - halfRectWidth && pos.x < line.x + halfRectWidth && pos.y < line.y && pos.y > line.y - (line.size / gElCanvas.height)) {
+            elText.innerHTML = textContent
+            console.log('ITS HAPPENINGGG')
+            setMemeSelectedLine(i)
+            return line
+        }
+    }
+    elText.innerHTML = textContent
+    return false
+}
+
+function onMove(ev) {
+    if (gIsDragging) {
+        console.log('dragging')
+        const pos = getEvPos(ev)
+        var { x, y } = pos
+        var dX = (x - gLastPos.x)
+        var dY = (y - gLastPos.y)
+        var line = getSelectedLine()
+        line.x += dX; line.y += dY;
+        drawCanvas()
+        placeLineModal()
+        gLastPos = pos
+    }
+}
+
+function onUp() {
+    if (gIsDragging) gIsDragging = false
+}
 
 // CANVAS
-function placeLineModal() {
-    var line = getSelectedLine()
+function showLineModal() {
     var elModal = document.querySelector('.line-modal')
-    elModal.children[0].innerHTML = line.text
-    elModal.style = ` left: ${gElCanvas.offsetLeft + line.x}px;top: calc( ${gElCanvas.offsetTop + line.y}px); font-family:${line.font}; font-size:${line.size}px;`
+    elModal.classList.remove('hidden')
 }
+
 function setMemeToCanvas(id) {
     var meme = getMemeByID(id)
     setMeme(meme)
@@ -101,14 +160,16 @@ function drawImage() {
     img.src = imgObj.url
     gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height);
 }
+
+// LINES
 function drawText() {
     var meme = getMeme()
     meme.lines.forEach((undefined, idx) => {
-        drawTextLine(idx)
+        drawTextLine(meme, idx)
+        //createLineModal(idx)
     });
 }
-function drawTextLine(lineIdx) {
-    var meme = getMeme()
+function drawTextLine(meme, lineIdx) {
     var line = meme.lines[lineIdx]
     var { outlineColor, outlineWidth, color, align } = line
     gCtx.lineWidth = outlineWidth
@@ -119,10 +180,22 @@ function drawTextLine(lineIdx) {
     var fontStr = `${line.size}px ${line.font}`
     gCtx.font = fontStr
     var { text, x, y } = line
+    x *= gElCanvas.width
+    y *= gElCanvas.height
     gCtx.fillText(text, x, y)
     gCtx.strokeText(text, x, y)
 }
+function placeLineModal() {
+    var line = getSelectedLine()
+    var elModal = document.querySelector('.line-modal')
+    elModal.children[0].innerHTML = line.text
+    elModal.style = ` left: ${gElCanvas.offsetLeft + (line.x * gElCanvas.width)}px;top: calc( ${gElCanvas.offsetTop + (line.y * gElCanvas.width)}px); font-family:${line.font}; font-size:${line.size}px;`
+}
+function createLineModal(lineIdx) {
+    var line = getSelectedLine(lineIdx)
+    console.log("🚀 ~ file: index-controller.js ~ line 170 ~ createLineModal ~ line", line)
 
+}
 //HTML RENDERING
 function renderImages() {
     var elGallery = document.querySelector('.image-gallery')
@@ -153,7 +226,9 @@ function getSavedMemeHTML(meme) {
     var strHTML = /*html*/ `<div class="saved-image" onclick="setMemeToCanvas('${meme.id}')">
     <img class="meme-img" src="${meme.imgData}" alt="saved meme">
     <div class="flex space-evenly">
+    <a href="${meme.imgData}">
          <button class="btn save-btn" onclick="onDownload(event,'${meme.id}')">Download</button>
+    </a>
          <button class="btn del-btn" onclick="onDelete(event,'${meme.id}')">Delete</button>
      </div>
     </div>`
@@ -161,10 +236,11 @@ function getSavedMemeHTML(meme) {
     return strHTML
 }
 
+
 function getEvPos(ev) {
     var pos = {
-        x: ev.offsetX,
-        y: ev.offsetY
+        x: ev.offsetX / gElCanvas.width,
+        y: ev.offsetY / gElCanvas.height
     }
     if (TOUCH_EVS.includes(ev.type)) {
         ev.preventDefault()
@@ -176,7 +252,6 @@ function getEvPos(ev) {
     }
     return pos
 }
-
 function addListeners() {
     addMouseListeners()
     //addTouchListeners()
@@ -196,39 +271,4 @@ function addTouchListeners() {
     gElCanvas.addEventListener('touchmove', onMove)
     gElCanvas.addEventListener('touchstart', onDown)
     gElCanvas.addEventListener('touchend', onUp)
-}
-
-function onDown(ev) {
-    //const pos = getEvPos(ev)
-    if (gIsDragging) return
-    var elText = document.querySelector('.line-modal-content')
-
-    var rect = elText.getBoundingClientRect()
-    if (ev.pageX > rect.x && ev.pageX < rect.x + rect.width && ev.pageY > rect.y && ev.pageY < rect.y + rect.height) {
-        gLastPos = { x: ev.pageX, y: ev.pageY };
-        gIsDragging = true
-        console.log('Beginning drag!')
-    }
-}
-
-function onMove(ev) {
-    if (gIsDragging) {
-        //const pos = getEvPos(ev)
-        console.log('dragging')
-        //var { x, y } = pos
-        var { x, y } = { x: ev.pageX, y: ev.pageY }
-        var dX = x - gLastPos.x
-        var dY = y - gLastPos.y
-
-        var line = getSelectedLine()
-        line.x += dX; line.y += dY;
-        drawCanvas()
-        placeLineModal()
-        gLastPos = { x: ev.pageX, y: ev.pageY }
-    }
-}
-
-function onUp() {
-    gIsDragging = false
-    console.log('Stopping drag')
 }

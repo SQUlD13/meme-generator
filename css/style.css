@@ -120,6 +120,8 @@ nav ul li a{
 #image-canvas{
     border-radius: 5px;
     box-shadow: var(--box-shadow);
+    opacity: 1;
+    transition:opacity 3s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 .meme-editor{
     margin-block-end: 20px;
@@ -203,6 +205,10 @@ nav ul li a{
     }
 }
 
+.hidden{
+    opacity: 0;
+    transition:opacity .3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
 /* HELPERS */
 .flex{
     display: flex;
