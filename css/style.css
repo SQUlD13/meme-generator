@@ -60,6 +60,18 @@ input[type="text"]:focus{
 .btn:focus{
     border-color:#222;
 }
+.main-screen{
+    visibility: hidden;
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background: rgba(0, 0, 0, .5);
+    backdrop-filter: saturate(50%) hue-rotate(20deg) blur(15px);
+    opacity: 0;
+    transition: opacity .3s cubic-bezier(0.445, 0.05, 0.55, 0.95), visibility 1ms cubic-bezier(0.445, 0.05, 0.55, 0.95) .3s ;
+}
 
 /* HEADER */
 header{
@@ -124,7 +136,24 @@ nav ul li a{
     transition:opacity 3s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 .meme-editor{
-    margin-block-end: 20px;
+    visibility: hidden;
+    position:absolute;
+    display:flex;
+    z-index: 10;
+    width:100%;
+    top:60px;
+    opacity: 0;
+    transition: opacity .3s cubic-bezier(0.445, 0.05, 0.55, 0.95), visibility 1ms cubic-bezier(0.445, 0.05, 0.55, 0.95) .3s ;
+}
+body.editor .meme-editor{
+    visibility: visible;
+    opacity:1;
+    transition:opacity .6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+body.editor .main-screen{
+    visibility: visible;
+    opacity:1;
+    transition:opacity .6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .controls{
     font-size: 1.5rem;
@@ -142,6 +171,9 @@ nav ul li a{
     width:60px;
     border-radius: 5px;
     margin:5px;
+}
+.wide-btn{
+    width:120px;
 }
 .save-btn{
     background:var(--main-color);
@@ -180,7 +212,7 @@ nav ul li a{
     padding:15px;
 }
 
-@media (max-width:1120px){
+@media (max-width:1280px){
     .main-container{
         max-width: 300px;
     }
@@ -191,6 +223,9 @@ nav ul li a{
     .control-btn{
         height:45px;
         width:45px;
+    }
+    .wide-btn{
+        width:90px;
     }
     .meme-img{
         height:150px;
@@ -227,6 +262,9 @@ nav ul li a{
 }
 .justify-end{
     justify-content: flex-end;
+}
+.justify-start{
+    justify-content: start;
 }
 .space-between{
     justify-content: space-between;

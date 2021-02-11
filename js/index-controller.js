@@ -69,11 +69,15 @@ function onAddLine() {
     meme.lines.push(line)
     setMemeSelectedLine(meme.lines.length - 1)
     drawCanvas()
+    showLineModal()
 }
 function onImgSelect(imgIdx) {
     setMemePicture(imgIdx)
-    showLineModal()
+    var meme = getMeme()
+    if (meme.lines.length > 0) showLineModal()
     drawCanvas()
+    toggleEditor()
+    placeLineModal();
 }
 function onDownload(ev, memeId) {
     var a = document.createElement('a')
@@ -165,15 +169,16 @@ function setMemeToCanvas(id) {
 function clearCanvas() {
     gCtx.clearRect(0, 0, gElCanvas.width, gElCanvas.height)
 }
-function resizeCanvas() {
-    // const elContainer = document.querySelector('.canvas-container');
-    // gElCanvas.width = elContainer.offsetWidth
-    // gElCanvas.height = elContainer.offsetHeight
-    var phoneScaling = window.matchMedia("(max-width:1120px)")
-    if (phoneScaling.matches) {
-        var size = 320
-    } else size = 400
-    gElCanvas.width = size; gElCanvas.height = size
+function resizeCanvas(ratio = 1) {
+    var mediumScaling = window.matchMedia("(max-width:1280px)")
+    var smallScaling = window.matchMedia("(max-width:620px)")
+    if (smallScaling.matches) {
+        var width = 320
+    } else if (mediumScaling.matches) {
+        var width = 620
+    } else width = 800
+
+    gElCanvas.width = width; gElCanvas.height = width / ratio
 }
 function drawCanvas() {
     var meme = getMeme()
@@ -253,6 +258,9 @@ function getAlignedX(line) {
 }
 
 //HTML & RENDERING
+function toggleEditor() {
+    document.body.classList.toggle('editor')
+}
 function renderImages() {
     var elGallery = document.querySelector('.image-gallery')
     var imgs = getImgs()

@@ -31,18 +31,18 @@
             </form>
         </div>
     </section>
-    <section id="editor" class="meme-editor margin-auto flex">
-
+    <div class="main-screen" onclick="toggleEditor()"></div>
+    <section id="editor" class="meme-editor margin-auto">
         <div class="canvas-container flex justify-center flex-1">
             <div class="line-modal hidden">
                 <p class="line-modal-content"></p>
             </div>
             <canvas id="image-canvas" width="400" height="400"></canvas>
         </div>
-        <div class="controls flex column flex-1 align-center">
-            <input class="controls-row flex-1margin-auto" type="text" name="text-input" id="text-input"
+        <div class="controls flex column flex-1 justify-center">
+            <input class="controls-row flex-1 margin-auto" type="text" name="text-input" id="text-input"
                 placeholder="Text line" oninput="onTextInput(this)">
-            <div class="controls-row flex flex-1 space-between">
+            <div class="controls-row flex flex-1 space-between margin-auto">
                 <div class="control-group flex flex-1 space-evenly align-center">
                     <button class="btn control-btn center" onclick="onToggleLine()">
                         <img class="icon-image" src="src/img/icons/vert-arrows.png" alt="swap lines">
@@ -55,7 +55,7 @@
                     </button>
                 </div>
             </div>
-            <div class="controls-row flex flex-1 space-between">
+            <div class="controls-row flex flex-1 space-between margin-auto">
                 <div class="control-group inline-flex flex-1 space-evenly">
                     <!-- <div class="mi mi-format-size"></div> -->
                     <button class="btn control-btn center" onclick="onFontSizeChange(+2)">
@@ -77,8 +77,9 @@
                     </button>
                 </div>
             </div>
-            <div class="controls-row flex flex-1 justify-end">
-                <button class="btn save-btn" onclick="onSave()">Save</button>
+            <div class="controls-row flex flex-1 space-between margin-auto">
+                <button class="btn control-btn wide-btn center" onclick="toggleEditor()">Back</button>
+                <button class="btn control-btn wide-btn center save-btn" onclick="onSave()">Save</button>
             </div>
         </div>
     </section>

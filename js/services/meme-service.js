@@ -124,7 +124,7 @@ function createMeme(lines = []) {
         id: createId(),
         selectedLineIdx: -1,
         selectedImgId: 0,
-        lines: DEFAULT_LINES
+        lines: DEFAULT_LINES.slice(0)
     }
     return meme
 }
