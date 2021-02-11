@@ -65,14 +65,21 @@ function onSearch(elSearchBar) {
 }
 
 
-function toggleSearch() {
-    renderSuggestions()
+function toggleSearch(ev) {
+    ev.stopPropagation()
+    console.log("🚀 ~ file: index-controller.js ~ line 69 ~ toggleSearch ~ ev", ev)
     var elSearchBar = document.getElementById('search-bar')
-
     elSearchBar.readOnly = !elSearchBar.readOnly
-
     gIsSearching = !gIsSearching
     document.querySelector('.search').classList.toggle('active')
+    renderSuggestions()
+}
+function closeSearch() {
+    var elSearchBar = document.getElementById('search-bar')
+    elSearchBar.readOnly = true
+    gIsSearching = false
+    document.querySelector('.search').classList.remove('active')
+    renderSuggestions()
 }
 
 function onDeleteLine() {
@@ -107,6 +114,7 @@ function onImgSelect(imgIdx) {
     if (meme.lines.length > 0) showLineModal()
     drawCanvas()
     toggleEditor()
+    renderAlignmentBtns()
     placeLineModal();
 }
 function onDownload(ev, memeId) {
@@ -382,15 +390,18 @@ function addListeners() {
     //addTouchListeners()
     addSearchBarListeners()
     window.addEventListener('resize', () => {
-        resizeCanvas()
-        drawCanvas()
-        placeLineModal()
+        if (document.body.classList.contains('editor')) {
+            resizeCanvas()
+            drawCanvas()
+            placeLineModal()
+        }
     })
 
 }
 function addSearchBarListeners() {
     var elSearch = document.querySelector('.search')
     elSearch.addEventListener('click', toggleSearch)
+    document.body.addEventListener('click', closeSearch)
 }
 function addMouseListeners() {
     gElCanvas.addEventListener('mousemove', onMove)

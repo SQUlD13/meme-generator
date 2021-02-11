@@ -14,7 +14,7 @@ var gImgs = [
     { id: 10, url: 'src/img/meme-square/10.jpg', keywords: ['politics', 'laughing', , 'obama'] },
     { id: 11, url: 'src/img/meme-square/11.jpg', keywords: ['suddenly gay'] },
     { id: 12, url: 'src/img/meme-square/12.jpg', keywords: ['what would you do'] },
-    { id: 13, url: 'src/img/meme-square/13.jpg', keywords: ['leonardo dicaprio', 'leonardo di caprio', 'salut', 'cheer'] },
+    { id: 13, url: 'src/img/meme-square/13.jpg', keywords: ['leonardo dicaprio', 'salut', 'cheer'] },
     { id: 14, url: 'src/img/meme-square/14.jpg', keywords: ['matrix', 'morpheus'] },
     { id: 15, url: 'src/img/meme-square/15.jpg', keywords: ['one does not simply', 'lord of the rings'] },
     { id: 16, url: 'src/img/meme-square/16.jpg', keywords: ['piccard', 'star trek', 'laugning'] },
@@ -81,7 +81,11 @@ function updateMemeText(text) {
 function alignLine(alignment) {
     var currentAlignment = gMeme.lines[gMeme.selectedLineIdx].align
     if (currentAlignment === undefined) gMeme.lines[gMeme.selectedLineIdx].align = alignment
-    else { if (currentAlignment = alignment) gMeme.lines[gMeme.selectedLineIdx].align = undefined }
+    else {
+        console.log('currentAlignment', currentAlignment, 'alignment', alignment);
+        if (currentAlignment === alignment) gMeme.lines[gMeme.selectedLineIdx].align = undefined
+        else gMeme.lines[gMeme.selectedLineIdx].align = alignment
+    }
 }
 function updateLineLocation(lineIdx, x, y) {
     gMeme.lines[lineIdx].x = x; gMeme.lines[lineIdx].y = y;

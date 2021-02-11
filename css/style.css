@@ -106,9 +106,11 @@ nav ul li a{
     width:50%;
 }
 .search-bar-container [type="text"]{
+    z-index: 1;
     width:100%;
 }
 .search-btn{
+    z-index: 2;
     position:absolute;
     right:0;
     top:0;
@@ -116,23 +118,32 @@ nav ul li a{
     border-radius: 0 5px 5px 0 ;
 }
 .search .autocom-box{
+    position:absolute;
+    width:100%;
     background: darkgray;
     top:1em;
     padding: 0;
     opacity: 0;
+    max-height:0;
     pointer-events: none;
-    max-height: 280px;
     overflow-y: auto;
+    transition: max-height .3s ease-out, opacity .3s ease-out;
 }
 
 .search.active [name="search-bar"]{
     filter: brightness(40%);
     transition: filter .15s ease-in;
+    border-radius:5px 5px 0 0;
+}
+.search.active .search-btn{
+    border-radius: 0 5px 0 0 ;
 }
 .search.active .autocom-box{
-  padding: 10px 8px;
-  opacity: 1;
-  pointer-events: auto;
+    padding: 10px 8px;
+    opacity: 1;
+    pointer-events: auto;
+    max-height: 15em;
+    transition: max-height .3s ease-in, opacity .3s ease-in;
 }
 .autocom-box ul{
     margin:0;
@@ -140,9 +151,13 @@ nav ul li a{
 }
 .autocom-box li{
     text-transform: capitalize;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
     list-style: none;
     padding: 3px 2px;
-    display: none;
+    display:none;
+    overflow: hidden;
+    opacity:0;
     width: 100%;
     cursor: default;
     border-radius: 3px;
@@ -152,7 +167,9 @@ nav ul li a{
 }
 
 .search.active .autocom-box li{
-  display: block;
+    display:block;
+    opacity:1;
+    transition: display 1ms linear 1s, opacity 1s cubic-bezier(0.455, 0.03, 0.515, 0.955);
 }
 .autocom-box li:hover{
   background: #efefef;
