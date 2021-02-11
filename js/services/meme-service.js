@@ -24,7 +24,7 @@ var gImgs = [
 const DEFAULT_LINES = [{
     text: 'Enter text here',
     size: 40,
-    align: 'center',
+    align: undefined,
     color: 'white',
     outline: true,
     outlineWidth: 2,
@@ -36,7 +36,7 @@ const DEFAULT_LINES = [{
 {
     text: 'Enter text here',
     size: 40,
-    align: 'center',
+    align: undefined,
     color: 'white',
     outline: true,
     outlineWidth: 2,
@@ -62,9 +62,19 @@ var gMemes
 function updateMemeText(text) {
     gMeme.lines[gMeme.selectedLineIdx].text = text
 }
+function alignLine(alignment) {
+    gMeme.lines[gMeme.selectedLineIdx].align = alignment
+}
 function updateLineLocation(lineIdx, x, y) {
     gMeme.lines[lineIdx].x = x; gMeme.lines[lineIdx].y = y;
 }
+function getSelectedLine() {
+    return gMeme.lines[gMeme.selectedLineIdx]
+}
+function deleteSelectedLine() {
+    gMeme.lines.splice(gMeme.selectedLineIdx, 1)
+}
+
 function setMemeSelectedLine(lineIdx) {
     gMeme.selectedLineIdx = lineIdx
 }
@@ -75,9 +85,7 @@ function setMemePicture(id) {
 function setMeme(meme) {
     gMeme = meme
 }
-function getSelectedLine() {
-    return gMeme.lines[gMeme.selectedLineIdx]
-}
+
 function getMemeByID(id) {
     return gMemes.find(meme => meme.id === id)
 }
