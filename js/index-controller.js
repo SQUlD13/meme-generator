@@ -9,6 +9,8 @@ var gCtx
 var gIsDragging
 var gLastPos
 
+var gKeywords
+
 function onInit() {
     createMemes()
     renderImages()
@@ -17,6 +19,7 @@ function onInit() {
     gCtx = gElCanvas.getContext('2d');
     addListeners()
     resizeCanvas()
+    gKeywords = getKeywords()
 }
 
 
@@ -30,6 +33,7 @@ function onFontSizeChange(sizeDiff) {
 function onTextAlignment(alignmentStr) {
     alignLine(alignmentStr)
     drawCanvas()
+    renderAlignmentBtns()
     placeLineModal()
 }
 function onToggleLine() {
@@ -37,6 +41,7 @@ function onToggleLine() {
     var nextIdx = (meme.selectedLineIdx === meme.lines.length - 1) ? 0 : meme.selectedLineIdx + 1
     meme.selectedLineIdx = nextIdx
     drawCanvas()
+    renderAlignmentBtns()
 }
 function onTextInput(elTextInput) {
     var text = elTextInput.value
@@ -45,6 +50,30 @@ function onTextInput(elTextInput) {
 }
 
 //EVENTS
+function onSearchSubmit(ev) {
+    ev.preventDefault()
+    var filter = document.getElementById('search-bar').value
+    setFilter(filter)
+    renderImages()
+}
+function onSearch(elSearchBar) {
+    var input = elSearchBar.value
+    showSuggestions(input)
+}
+function showSuggestions(input = '') {
+    var elAutocom = document.querySelector('.autocom-box')
+    var strHTML = '<ul>'
+    if (input !== '') var suggestions = gKeywords.filter(word => word.toLowerCase().startsWith(input.toLowerCase()))
+    else suggestions = gKeywords
+    suggestions.forEach(suggestion => strHTML += `<li><p onclick="setFilter('${suggestion}'); renderImages()">${suggestion}</p></li>`)
+    strHTML += '</ul>'
+    elAutocom.innerHTML = strHTML;
+}
+function toggleSearch() {
+    showSuggestions()
+    document.querySelector('.search').classList.toggle('active')
+}
+
 function onDeleteLine() {
     deleteSelectedLine()
     var meme = getMeme()
@@ -127,7 +156,6 @@ function findClickedLine(ev) {
     elText.innerHTML = textContent
     return false
 }
-
 function onMove(ev) {
     if (gIsDragging) {
         console.log('dragging')
@@ -147,7 +175,6 @@ function onMove(ev) {
         gLastPos = pos
     }
 }
-
 function onUp() {
     if (gIsDragging) gIsDragging = false
 }
@@ -258,6 +285,26 @@ function getAlignedX(line) {
 }
 
 //HTML & RENDERING
+function renderAlignmentBtns() {
+    var line = getSelectedLine()
+    switch (line.align) {
+        case 'left':
+            var selectedAlignment = 0
+            break
+        case 'center':
+            var selectedAlignment = 1
+            break
+        case 'right':
+            var selectedAlignment = 2
+            break
+    }
+    var buttons = document.querySelector('.alignment-control-group').children
+    for (let i = 0; i < 3; i++) {
+        if (selectedAlignment === i) buttons[i].classList.add('active')
+        else buttons[i].classList.remove('active')
+    }
+
+}
 function toggleEditor() {
     document.body.classList.toggle('editor')
 }
@@ -287,8 +334,6 @@ function renderSavedImages() {
     elGallery.innerHTML = strHTML
 }
 function getSavedMemeHTML(meme) {
-    console.log("🚀 ~ file: index-controller.js ~ line 209 ~ getSavedMemeHTML ~ meme", meme)
-
     var strHTML = /*html*/ `<div class="saved-image" onclick="setMemeToCanvas('${meme.id}')">
     <img class="meme-img" src="${meme.imgData}" alt="saved meme">
     <div class="flex space-evenly">
@@ -321,19 +366,26 @@ function getEvPos(ev) {
 function addListeners() {
     addMouseListeners()
     //addTouchListeners()
+    addSearchBarListeners()
     window.addEventListener('resize', () => {
         resizeCanvas()
         drawCanvas()
         placeLineModal()
     })
+
+}
+function addSearchBarListeners() {
+    var elSearchbar = document.getElementById('search-bar')
+    elSearchbar.addEventListener('focusin', toggleSearch)
+    elSearchbar.addEventListener('focusout', toggleSearch)
 }
 function addMouseListeners() {
     gElCanvas.addEventListener('mousemove', onMove)
     gElCanvas.addEventListener('mousedown', onDown)
     gElCanvas.addEventListener('mouseup', onUp)
 }
-function addTouchListeners() {
-    gElCanvas.addEventListener('touchmove', onMove)
-    gElCanvas.addEventListener('touchstart', onDown)
-    gElCanvas.addEventListener('touchend', onUp)
-}
+// function addTouchListeners() {
+//     gElCanvas.addEventListener('touchmove', onMove)
+//     gElCanvas.addEventListener('touchstart', onDown)
+//     gElCanvas.addEventListener('touchend', onUp)
+// }

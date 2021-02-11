@@ -28,6 +28,7 @@ h1,h2,h3,h4,h5,h6,p{
 /* GENERAL */
 input[type="text"]  {
     border:0;
+    border-radius: 5px;
     padding:5px;
     outline: none;
     transition: filter .15s ease-out;
@@ -106,10 +107,51 @@ nav ul li a{
 }
 .search-bar-container [type="text"]{
     width:100%;
-    border-radius: 5px 0 0 5px;
 }
 .search-btn{
+    position:absolute;
+    right:0;
+    top:0;
+    height:1.545em;
     border-radius: 0 5px 5px 0 ;
+}
+.search .autocom-box{
+    background: darkgray;
+    top:1em;
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.search.active .autocom-box{
+  padding: 10px 8px;
+  opacity: 1;
+  pointer-events: auto;
+}
+.autocom-box ul{
+    margin:0;
+    padding:0;
+}
+.autocom-box li{
+    text-transform: capitalize;
+    list-style: none;
+    padding: 3px 2px;
+    display: none;
+    width: 100%;
+    cursor: default;
+    border-radius: 3px;
+}
+.autocom-box ul > *:not(:last-child) {
+    border-bottom : 2px solid var(--background-color);
+}
+
+.search.active .autocom-box li{
+  display: block;
+}
+.autocom-box li:hover{
+  background: #efefef;
 }
 
 /* IMAGE GALLERY */
@@ -171,6 +213,9 @@ body.editor .main-screen{
     width:60px;
     border-radius: 5px;
     margin:5px;
+}
+.control-btn.active{
+    background: var(--main-color);
 }
 .wide-btn{
     width:120px;
