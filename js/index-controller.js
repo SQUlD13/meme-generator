@@ -10,6 +10,7 @@ var gIsDragging
 var gLastPos
 
 var gKeywords
+var gIsSearching = false
 
 function onInit() {
     createMemes()
@@ -57,20 +58,20 @@ function onSearchSubmit(ev) {
     renderImages()
 }
 function onSearch(elSearchBar) {
-    var input = elSearchBar.value
-    showSuggestions(input)
+    if (gIsSearching) {
+        var input = elSearchBar.value
+        renderSuggestions(input)
+    }
 }
-function showSuggestions(input = '') {
-    var elAutocom = document.querySelector('.autocom-box')
-    var strHTML = '<ul>'
-    if (input !== '') var suggestions = gKeywords.filter(word => word.toLowerCase().startsWith(input.toLowerCase()))
-    else suggestions = gKeywords
-    suggestions.forEach(suggestion => strHTML += `<li><p onclick="setFilter('${suggestion}'); renderImages()">${suggestion}</p></li>`)
-    strHTML += '</ul>'
-    elAutocom.innerHTML = strHTML;
-}
+
+
 function toggleSearch() {
-    showSuggestions()
+    renderSuggestions()
+    var elSearchBar = document.getElementById('search-bar')
+
+    elSearchBar.readOnly = !elSearchBar.readOnly
+
+    gIsSearching = !gIsSearching
     document.querySelector('.search').classList.toggle('active')
 }
 
@@ -191,6 +192,7 @@ function hideLineModal() {
 function setMemeToCanvas(id) {
     var meme = getMemeByID(id)
     setMeme(meme)
+    toggleEditor()
     drawCanvas()
 }
 function clearCanvas() {
@@ -285,6 +287,18 @@ function getAlignedX(line) {
 }
 
 //HTML & RENDERING
+function renderSuggestions(input = '') {
+    var elAutocom = document.querySelector('.autocom-box')
+    var strHTML = '<ul>'
+    if (input !== '') var suggestions = gKeywords.filter(word => word.toLowerCase().startsWith(input.toLowerCase()))
+    else suggestions = gKeywords
+    suggestions.forEach(suggestion => strHTML += `<li><p onclick="setFilter('${suggestion}'); renderImages(); clearSearch()">${suggestion}</p></li>`)
+    strHTML += '</ul>'
+    elAutocom.innerHTML = strHTML;
+}
+function clearSearch() {
+    document.getElementById('search-bar').value = ''
+}
 function renderAlignmentBtns() {
     var line = getSelectedLine()
     switch (line.align) {
@@ -375,9 +389,8 @@ function addListeners() {
 
 }
 function addSearchBarListeners() {
-    var elSearchbar = document.getElementById('search-bar')
-    elSearchbar.addEventListener('focusin', toggleSearch)
-    elSearchbar.addEventListener('focusout', toggleSearch)
+    var elSearch = document.querySelector('.search')
+    elSearch.addEventListener('click', toggleSearch)
 }
 function addMouseListeners() {
     gElCanvas.addEventListener('mousemove', onMove)

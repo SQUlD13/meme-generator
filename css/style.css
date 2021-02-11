@@ -33,7 +33,7 @@ input[type="text"]  {
     outline: none;
     transition: filter .15s ease-out;
 }
-input[type="text"]:focus{
+input[type="text"]:focus:not([name="search-bar"]){
     filter: brightness(40%);
     transition: filter .15s ease-in;
 }
@@ -125,6 +125,10 @@ nav ul li a{
     overflow-y: auto;
 }
 
+.search.active [name="search-bar"]{
+    filter: brightness(40%);
+    transition: filter .15s ease-in;
+}
 .search.active .autocom-box{
   padding: 10px 8px;
   opacity: 1;
