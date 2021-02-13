@@ -17,7 +17,7 @@
             </div>
             <nav>
                 <ul class="clean-list inline-flex">
-                    <li><a class="center" href="#saved-image-gallery">User Images</a></li>
+                    <li><a class="center" href="#saved-image-gallery">Saved Images</a></li>
                 </ul>
             </nav>
         </div>
@@ -34,6 +34,7 @@
         </div>
     </section>
     <div class="main-screen" onclick="toggleEditor()"></div>
+
     <section id="editor" class="meme-editor flex space-between align-center">
         <div class="canvas-container flex justify-center">
             <div class="line-modal hidden">
@@ -116,12 +117,19 @@
                 <button class="btn control-btn wide-btn center save-btn" onclick="onSave()">Save</button>
             </div>
         </div>
-
-
     </section>
-    <section class="image-gallery main-container margin-auto"></section>
-    <section id="saved-image-gallery" class="image-gallery"></section>
+    <section id="image-gallery" class="image-gallery main-container margin-auto"></section>
+    <section id="saved-image-gallery" class="image-row"></section>
 
+    <footer class="flex column space-evenly align-center">
+        <small class="flex column space-between align-center">
+            <a href="#header">Back To Top</a>
+            <p>Created by SQUID13 (Anton Zebnitski)</p>
+            <a href="https://github.com/SQUlD13/meme-generator">Github Repository</a>
+        </small>
+
+
+    </footer>
     <script src="js/services/util-service.js"></script>
     <script src="js/services/storage-service.js"></script>
     <script src="js/services/meme-service.js"></script>

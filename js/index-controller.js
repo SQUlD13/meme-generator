@@ -15,6 +15,7 @@ var gKeyboardInputs = ''
 
 var gKeywords
 var gIsSearching = false
+var gCapitalize = false
 var gElSearchBarInput
 
 function onInit() {
@@ -68,11 +69,29 @@ function onTextInput(elTextInput) {
     drawCanvas()
 }
 function updateTextInput(ev) {
-    const regex = /^[a-z{1}]$/
+    const regex = /^[a-zA-Z{1}]$/
     if (gIsInlineEditingLine) {
-        if (ev.keyCode === 8) gKeyboardInputs = gKeyboardInputs.slice(0, gKeyboardInputs.length - 1);
+        console.log("🚀 ~ file: index-controller.js ~ line 84 ~ updateTextInput ~ gCapitalize", ev.keyCode)
+        if (ev.keyCode === 8) {
+            if (gKeyboardInputs) gKeyboardInputs = gKeyboardInputs.slice(0, gKeyboardInputs.length - 1);
+            else {
+                gElTextInput.value = ''
+                drawCanvas()
+            }
+        }
         else if (ev.keyCode === 32) { ev.preventDefault(); gKeyboardInputs += ' ' }
-        else if (ev.key.match(regex)) gKeyboardInputs += ev.key
+        else if (ev.key.match(regex)) {
+            if (gCapitalize) {
+                console.log('adding capitalized letter')
+                gKeyboardInputs += ev.key.toUpperCase()
+            }
+            else { gKeyboardInputs += ev.key }
+        }
+        else if (ev.keyCode === 16) {
+            console.log('shift pressed')
+            gCapitalize = true;
+            return
+        }
         else return
         gElTextInput.value = gKeyboardInputs
         updateMemeText(gKeyboardInputs)
@@ -92,6 +111,7 @@ function onBorderColorChange(elColorInput) {
 
 //EVENTS
 function onFileUploadClick(ev) {
+    console.log('clicking thing!')
     ev.preventDefault()
     ev.stopPropagation()
     var elInput = document.getElementById('file-input')
@@ -354,7 +374,7 @@ function renderAlignmentBtns() {
 }
 
 function renderImages() {
-    var elGallery = document.querySelector('.image-gallery')
+    var elGallery = document.getElementById('image-gallery')
     var imgs = getImgs()
     var strHTML = ''
     imgs.forEach(img => {
@@ -474,6 +494,10 @@ function addListeners() {
 function addEditorListeners() {
     gElTextInput.addEventListener('focusin', () => gIsInlineEditingLine = false)
     window.addEventListener('keydown', updateTextInput)
+    window.addEventListener('keyup', (ev) => {
+        if (ev.keyCode === 16) gCapitalize = false
+    })
+
 }
 function addSearchBarListeners() {
     gElSearchBarInput.addEventListener('click', toggleSearch)
