@@ -10,7 +10,7 @@
 </head>
 
 <body onload="onInit()">
-    <header>
+    <header id="header">
         <div class="main-container flex space-between align-center margin-auto">
             <div class="logo">
                 <h1>Maymay</h1>
@@ -31,7 +31,8 @@
                 <div class="autocom-box">
 
                 </div>
-                <button class="btn search-btn mi mi-search"></button>
+                <button class="btn search-btn mi mi-search" onclick="onFileUploadClick(event)"></button>
+                <input hidden type="file" name="file-input" id="file-input" onchange="onFileUpload(event,this)">
             </form>
         </div>
     </section>
