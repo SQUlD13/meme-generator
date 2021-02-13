@@ -29,23 +29,23 @@
                 <input type="text" name="search-bar" id="search-bar" placeholder="Search..." oninput="onSearch(this)"
                     autocomplete="off" readonly="true" custom>
                 <div class="autocom-box"></div>
-                <button class="btn search-btn mi mi-search" onkeydown="onFileUploadClick(event)"></button>
+                <button class="btn search-btn mi mi-search" onmousedown="onFileUploadClick(event)"></button>
                 <input hidden type="file" name="file-input" id="file-input" onchange="onFileUpload(event,this)">
             </form>
         </div>
     </section>
     <div class="main-screen" onclick="toggleEditor()"></div>
-    <section id="editor" class="meme-editor margin-auto">
-        <div class="canvas-container flex justify-center flex-1">
+    <section id="editor" class="meme-editor flex space-between align-center">
+        <div class="canvas-container flex justify-center">
             <div class="line-modal hidden">
                 <p class="line-modal-content"></p>
             </div>
             <canvas id="image-canvas" width="400" height="400"></canvas>
         </div>
-        <div class="controls flex column flex-1 justify-center">
+        <div class="controls flex column justify-center">
             <input class="controls-row flex-1 margin-auto" type="text" name="text-input" id="text-input"
                 placeholder="Text line" oninput="onTextInput(this)">
-            <div class="controls-row flex flex-1 space-between margin-auto">
+            <div class="controls-row center flex-1 margin-auto">
                 <div class="control-group flex flex-1 space-evenly align-center">
                     <button class="btn control-btn center" onclick="onToggleLine()">
                         <img class="icon-image" src="src/img/icons/vert-arrows.png" alt="swap lines">
@@ -58,16 +58,28 @@
                     </button>
                 </div>
             </div>
-            <div class="controls-row flex flex-1 space-between margin-auto">
-                <div class="control-group inline-flex flex-1 space-evenly">
-                    <button class="btn control-btn center" onclick="onFontSizeChange(+2)">
-                        <img class="icon-image" src="src/img/icons/increase-font.png" alt="increase font size">
-                    </button>
-                    <button class="btn control-btn center" onclick="onFontSizeChange(-2)">
-                        <img class="icon-image" src="src/img/icons/decrease-font.png" alt="decrease font size">
-                    </button>
+            <div class="controls-row center flex-1 margin-auto">
+                <div class="control-group inline-flex flex-1 space-evenly align-center justify-center">
+                    <div class="slider-label flex space-between align-center">
+                        <div class="mi mi-format-font-size"></div>
+                        <label for="font-size"><span>40</span>px</label>
+                    </div>
+                    <input class="flex flex-1" type="range" name="font-size" id="font-size" min="0" max="150"
+                        oninput="onFontSizeChange(this)" value="40">
                 </div>
-                <div class="control-group alignment-control-group inline-flex flex-1 space-evenly">
+            </div>
+            <div class="controls-row center flex-1 margin-auto">
+                <div class="control-group inline-flex flex-1 space-evenly align-center justify-center">
+                    <div class="slider-label flex space-between align-center">
+                        <div class="mi mi-format-border-size"></div>
+                        <label for="border-size"><span>2</span>px</label>
+                    </div>
+                    <input class="flex flex-1" type="range" name="border-size" id="border-size" min="0" max="10"
+                        oninput="onBorderSizeChange(this)" value="2">
+                </div>
+            </div>
+            <div class="controls-row center flex-1 margin-auto">
+                <div class="control-group alignment-control-group inline-flex flex-1 space-evenly align-center">
                     <button class="btn control-btn center" onclick="onTextAlignment('left')">
                         <img class="icon-image" src="src/img/icons/align-to-left.png" alt="align-text">
                     </button>
@@ -79,11 +91,34 @@
                     </button>
                 </div>
             </div>
-            <div class="controls-row flex flex-1 space-between margin-auto">
+            <div class="controls-row center flex-1 margin-auto">
+                <div class="control-group inline-flex flex-1 space-evenly align-center">
+                    <button class="btn control-btn mi mi-text-color" onmousedown="">
+                        <input class="hidden-color" type="color" name="text-color" id="text-color"
+                            oninput="onTextColorChange(this)" value="#ffffff">
+                    </button>
+                    <button class="btn control-btn mi mi-border-color" onmousedown="">
+                        <input class="hidden-color" type="color" name="border-color" id="border-color"
+                            oninput="onBorderColorChange(this)">
+                    </button>
+                </div>
+                <div class="control-group inline-flex flex-1 justify-center align-center">
+                    <div class="mi mi-font"></div>
+                    <select class="flex" name="font-family" id="font-family" onchange="onFontChange(this)">
+                        <option value="Impact" selected="selected">Impact</option>
+                        <option value="Arial">Arial</option>
+                        <option value="Courier New">Courier</option>
+                        <option value="Lobster Two">Lobster</option>
+                    </select>
+                </div>
+            </div>
+            <div class="controls-row center flex-1 margin-auto">
                 <button class="btn control-btn wide-btn center" onclick="toggleEditor()">Back</button>
                 <button class="btn control-btn wide-btn center save-btn" onclick="onSave()">Save</button>
             </div>
         </div>
+
+
     </section>
     <section class="image-gallery main-container margin-auto"></section>
     <section id="saved-image-gallery" class="image-gallery"></section>

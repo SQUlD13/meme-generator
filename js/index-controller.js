@@ -32,10 +32,20 @@ function onInit() {
 
 
 //EDITORINPUTS
-function onFontSizeChange(sizeDiff) {
-    var line = getSelectedLine()
-    line.size += sizeDiff
-    document.querySelector('.line-modal').fontSize = line.size
+function onFontChange(elSwitch) {
+    getSelectedLine().font = elSwitch.value
+    drawCanvas()
+}
+function onFontSizeChange(elFontSlider) {
+    var label = document.querySelector('label[for="font-size"] span')
+    label.innerHTML = elFontSlider.value
+    getSelectedLine().size = elFontSlider.value
+    drawCanvas()
+}
+function onBorderSizeChange(elBorderSlider) {
+    var label = document.querySelector('label[for="border-size"] span')
+    label.innerHTML = elBorderSlider.value
+    getSelectedLine().outlineWidth = elBorderSlider.value
     drawCanvas()
 }
 function onTextAlignment(alignmentStr) {
@@ -58,19 +68,32 @@ function onTextInput(elTextInput) {
     drawCanvas()
 }
 function updateTextInput(ev) {
-    const regex = /[a-zA-Z]/g
+    const regex = /^[a-z{1}]$/
+    console.log(regex)
     if (gIsInlineEditingLine) {
         if (ev.keyCode === 8) gKeyboardInputs = gKeyboardInputs.slice(0, gKeyboardInputs.length - 1);
-        else if (ev.keyCode === 32) gKeyboardInputs += ' '
+        else if (ev.keyCode === 32) { ev.preventDefault(); gKeyboardInputs += ' ' }
         else if (ev.key.match(regex)) gKeyboardInputs += ev.key
+        else return
         gElTextInput.value = gKeyboardInputs
         updateMemeText(gKeyboardInputs)
         drawCanvas()
     }
 }
+function onTextColorChange(elColorInput) {
+    var line = getSelectedLine()
+    line.color = elColorInput.value
+    drawCanvas()
+}
+function onBorderColorChange(elColorInput) {
+    var line = getSelectedLine()
+    line.outlineColor = elColorInput.value
+    drawCanvas()
+}
 
 //EVENTS
 function onFileUploadClick(ev) {
+    console.log('clicking thing!')
     ev.preventDefault()
     ev.stopPropagation()
     var elInput = document.getElementById('file-input')
@@ -242,7 +265,6 @@ function drawText(meme) {
 function drawTextLine(meme, lineIdx) {
     var line = meme.lines[lineIdx]
     var { outlineColor, outlineWidth, color, align } = line
-    gCtx.lineWidth = outlineWidth
     gCtx.strokeStyle = outlineColor
     gCtx.textAlign = 'center'
     gCtx.fillStyle = color
@@ -256,7 +278,10 @@ function drawTextLine(meme, lineIdx) {
     x *= gElCanvas.width
     y *= gElCanvas.height
     gCtx.fillText(text, x, y)
-    gCtx.strokeText(text, x, y)
+    if (outlineWidth > 0) {
+        gCtx.lineWidth = outlineWidth
+        gCtx.strokeText(text, x, y)
+    }
 }
 function placeLineModal() {
     var line = getSelectedLine()
