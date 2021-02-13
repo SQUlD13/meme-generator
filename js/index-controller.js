@@ -69,7 +69,6 @@ function onTextInput(elTextInput) {
 }
 function updateTextInput(ev) {
     const regex = /^[a-z{1}]$/
-    console.log(regex)
     if (gIsInlineEditingLine) {
         if (ev.keyCode === 8) gKeyboardInputs = gKeyboardInputs.slice(0, gKeyboardInputs.length - 1);
         else if (ev.keyCode === 32) { ev.preventDefault(); gKeyboardInputs += ' ' }
@@ -93,7 +92,6 @@ function onBorderColorChange(elColorInput) {
 
 //EVENTS
 function onFileUploadClick(ev) {
-    console.log('clicking thing!')
     ev.preventDefault()
     ev.stopPropagation()
     var elInput = document.getElementById('file-input')

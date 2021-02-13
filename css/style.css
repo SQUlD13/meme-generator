@@ -52,14 +52,18 @@ label{
     color:var(--text-color);
     outline:none;
     transition: background .15s ease-out;
+    /* box-shadow: 4px 4px 0 4px rgba(0, 0, 0, 0.5); */
 }
 .btn:hover{
     background: var(--main-color);
+    /* transform:translate(3px,3px);
+    box-shadow: 2px 2px 0 4px rgba(0, 0, 0, 0.5); */
     transition: background .15s ease-in, filter .05s ease-out;
 
 }
 .btn:active{
     filter: brightness(40%);
+    /* transform:translate(7px,7px); */
     transition: filter .05s ease-in;
 }
 .btn:focus{
@@ -291,8 +295,9 @@ body.editor .main-screen{
     border:0;
     border-radius: 0 5px 5px 0;
 }
-label[for=font-size]{
+label{
     color:rgb(90, 90, 90);
+    user-select:none;
 }
 .slider-label{
     background:darkgray;
