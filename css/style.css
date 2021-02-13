@@ -64,6 +64,7 @@ input[type="text"]:focus:not([name="search-bar"]){
 .main-screen{
     visibility: hidden;
     position:fixed;
+    z-index: 1;
     top:0;
     left:0;
     right:0;
@@ -120,7 +121,7 @@ nav ul li a{
 .search .autocom-box{
     position:absolute;
     width:100%;
-    background: darkgray;
+    background: #f1f1f1;
     top:1em;
     padding: 0;
     opacity: 0;
@@ -172,7 +173,7 @@ nav ul li a{
     transition: display 1ms linear 1s, opacity 1s cubic-bezier(0.455, 0.03, 0.515, 0.955);
 }
 .autocom-box li:hover{
-  background: #efefef;
+  background: lightgray;
 }
 
 /* IMAGE GALLERY */
@@ -198,6 +199,7 @@ nav ul li a{
     position:absolute;
     height:100%;
     width:100%;
+    border-radius: 15px;
     background: rgba(34, 34, 34, 0.178);
     backdrop-filter: blur(15px);
     transition:opacity .3s ease-out
@@ -290,6 +292,9 @@ body.editor .main-screen{
     color:transparent;
     transform:translate(-50%,-100%);
     height:1em;
+}
+.line-modal:hover{
+    filter:hue-rotate(90deg)
 }
 .line-modal-content{
     border: 3px solid var(--main-color);

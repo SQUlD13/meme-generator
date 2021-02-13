@@ -28,10 +28,8 @@
             <form class="flex column" onsubmit="onSearchSubmit(event)">
                 <input type="text" name="search-bar" id="search-bar" placeholder="Search..." oninput="onSearch(this)"
                     autocomplete="off" readonly="true" custom>
-                <div class="autocom-box">
-
-                </div>
-                <button class="btn search-btn mi mi-search" onclick="onFileUploadClick(event)"></button>
+                <div class="autocom-box"></div>
+                <button class="btn search-btn mi mi-search" onkeydown="onFileUploadClick(event)"></button>
                 <input hidden type="file" name="file-input" id="file-input" onchange="onFileUpload(event,this)">
             </form>
         </div>
@@ -62,7 +60,6 @@
             </div>
             <div class="controls-row flex flex-1 space-between margin-auto">
                 <div class="control-group inline-flex flex-1 space-evenly">
-                    <!-- <div class="mi mi-format-size"></div> -->
                     <button class="btn control-btn center" onclick="onFontSizeChange(+2)">
                         <img class="icon-image" src="src/img/icons/increase-font.png" alt="increase font size">
                     </button>
@@ -94,7 +91,6 @@
     <script src="js/services/util-service.js"></script>
     <script src="js/services/storage-service.js"></script>
     <script src="js/services/meme-service.js"></script>
-    <script src="js/services/editor-service.js"></script>
     <script src="js/index-controller.js"></script>
 </body>
 

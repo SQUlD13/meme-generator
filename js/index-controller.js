@@ -9,14 +9,21 @@ var gCtx
 var gIsDragging
 var gLastPos
 
+var gIsInlineEditingLine = false
+var gElTextInput
+var gKeyboardInputs = ''
+
 var gKeywords
 var gIsSearching = false
+var gElSearchBarInput
 
 function onInit() {
     createDB()
     renderImages()
     renderSavedImages()
     gElCanvas = document.getElementById('image-canvas');
+    gElTextInput = document.getElementById('text-input')
+    gElSearchBarInput = document.getElementById('search-bar')
     gCtx = gElCanvas.getContext('2d');
     addListeners()
     resizeCanvas()
@@ -46,8 +53,20 @@ function onToggleLine() {
 }
 function onTextInput(elTextInput) {
     var text = elTextInput.value
+    gKeyboardInputs = elTextInput.value
     updateMemeText(text)
     drawCanvas()
+}
+function updateTextInput(ev) {
+    const regex = /[a-zA-Z]/g
+    if (gIsInlineEditingLine) {
+        if (ev.keyCode === 8) gKeyboardInputs = gKeyboardInputs.slice(0, gKeyboardInputs.length - 1);
+        else if (ev.keyCode === 32) gKeyboardInputs += ' '
+        else if (ev.key.match(regex)) gKeyboardInputs += ev.key
+        gElTextInput.value = gKeyboardInputs
+        updateMemeText(gKeyboardInputs)
+        drawCanvas()
+    }
 }
 
 //EVENTS
@@ -75,23 +94,37 @@ function onSearch(elSearchBar) {
         renderSuggestions(input)
     }
 }
-
-
-function toggleSearch(ev) {
-    ev.stopPropagation()
-    var elSearchBar = document.getElementById('search-bar')
-    elSearchBar.readOnly = !elSearchBar.readOnly
-    gIsSearching = !gIsSearching
-    document.querySelector('.search').classList.toggle('active')
-    renderSuggestions()
+function onDown(ev) {
+    const pos = getEvPos(ev)
+    if (gIsDragging) return
+    var line = findClickedLine(ev)
+    if (line) {
+        gLastPos = pos
+        gIsDragging = true
+    }
 }
-function closeSearch() {
-    var elSearchBar = document.getElementById('search-bar')
-    elSearchBar.readOnly = true
-    gIsSearching = false
-    document.querySelector('.search').classList.remove('active')
-    renderSuggestions()
+function onMove(ev) {
+    if (gIsDragging) {
+        const pos = getEvPos(ev)
+        var { x, y } = pos
+        var line = getSelectedLine()
+        if (line.align === undefined) {
+            var dX = (x - gLastPos.x)
+        } else {
+            dX = 0;
+        }
+        var dX = (x - gLastPos.x)
+        var dY = (y - gLastPos.y)
+        line.x += dX; line.y += dY;
+        drawCanvas()
+        placeLineModal()
+        gLastPos = pos
+    }
 }
+function onUp() {
+    if (gIsDragging) gIsDragging = false
+}
+
 
 function onDeleteLine() {
     deleteSelectedLine()
@@ -127,6 +160,7 @@ function onImgSelect(imgId) {
     setMemePicture(imgId)
     var meme = getMeme()
     if (meme.lines.length > 0) showLineModal()
+    gIsInlineEditingLine = true
     drawCanvas()
     toggleEditor()
     renderAlignmentBtns()
@@ -146,61 +180,13 @@ function onSave() {
     saveDB()
     renderSavedImages()
 }
-function onDelete(ev, id) {
+function onDeleteMeme(ev, id) {
     ev.stopPropagation()
     var delMeme = deleteMemeByID(id)
     renderSavedImages()
 }
 
-function onDown(ev) {
-    const pos = getEvPos(ev)
-    if (gIsDragging) return
-    var line = findClickedLine(ev)
-    if (line) {
-        gLastPos = pos
-        gIsDragging = true
-    }
-}
-function findClickedLine(ev) {
-    var meme = getMeme()
-    var elText = document.querySelector('.line-modal-content')
-    var textContent = elText.innerHTML
-    const pos = getEvPos(ev)
-    for (let i = 0; i < meme.lines.length; i++) {
-        var line = meme.lines[i]
-        elText.innerHTML = line.text
-        var rect = elText.getBoundingClientRect()
-        var halfRectWidth = (rect.width / gElCanvas.width) / 2
-        if (pos.x > line.x - halfRectWidth && pos.x < line.x + halfRectWidth && pos.y < line.y && pos.y > line.y - (line.size / gElCanvas.height)) {
-            elText.innerHTML = textContent
-            setMemeSelectedLine(i)
-            return line
-        }
-    }
-    elText.innerHTML = textContent
-    return false
-}
-function onMove(ev) {
-    if (gIsDragging) {
-        const pos = getEvPos(ev)
-        var { x, y } = pos
-        var line = getSelectedLine()
-        if (line.align === undefined) {
-            var dX = (x - gLastPos.x)
-        } else {
-            dX = 0;
-        }
-        var dX = (x - gLastPos.x)
-        var dY = (y - gLastPos.y)
-        line.x += dX; line.y += dY;
-        drawCanvas()
-        placeLineModal()
-        gLastPos = pos
-    }
-}
-function onUp() {
-    if (gIsDragging) gIsDragging = false
-}
+
 
 // CANVAS
 function showLineModal() {
@@ -283,7 +269,6 @@ function placeLineModal() {
 
     elModal.style = ` left: ${left}px;top: calc( ${right}px); font-family:${line.font}; font-size:${line.size}px;`
 }
-
 function getAlignedX(line) {
     if (!line.align) return line.x
     if (line.align) {
@@ -344,9 +329,7 @@ function renderAlignmentBtns() {
     }
 
 }
-function toggleEditor() {
-    document.body.classList.toggle('editor')
-}
+
 function renderImages() {
     var elGallery = document.querySelector('.image-gallery')
     var imgs = getImgs()
@@ -388,7 +371,7 @@ function getSavedMemeHTML(meme) {
     <a href="${meme.imgData}" download="meme - ${meme.id}">
          <button class="btn save-btn")">Download</button>
     </a>
-         <button class="btn del-btn" onclick="onDelete(event,'${meme.id}')">Delete</button>
+         <button class="btn del-btn" onclick="onDeleteMeme(event,'${meme.id}')">Delete</button>
      </div>
     </div>`
 
@@ -396,6 +379,46 @@ function getSavedMemeHTML(meme) {
 }
 
 //OTHER
+function findClickedLine(ev) {
+    var meme = getMeme()
+    var elText = document.querySelector('.line-modal-content')
+    var textContent = elText.innerHTML
+    const pos = getEvPos(ev)
+    for (let i = 0; i < meme.lines.length; i++) {
+        var line = meme.lines[i]
+        elText.innerHTML = line.text
+        var rect = elText.getBoundingClientRect()
+        var halfRectWidth = (rect.width / gElCanvas.width) / 2
+        if (pos.x > line.x - halfRectWidth && pos.x < line.x + halfRectWidth && pos.y < line.y && pos.y > line.y - (line.size / gElCanvas.height)) {
+            gElTextInput.value = line.text
+            gKeyboardInputs = line.text
+            gIsInlineEditingLine = true
+            elText.innerHTML = textContent
+            setMemeSelectedLine(i)
+            return line
+        }
+    }
+    gIsInlineEditingLine = false
+    elText.innerHTML = textContent
+    return false
+}
+function toggleEditor() {
+    document.body.classList.toggle('editor')
+}
+function toggleSearch(ev) {
+    ev.stopPropagation()
+    gElSearchBarInput.readOnly = !gElSearchBarInput.readOnly
+    gIsSearching = !gIsSearching
+    document.querySelector('.search').classList.toggle('active')
+    renderSuggestions()
+}
+function closeSearch() {
+    gElSearchBarInput.readOnly = true
+    gIsSearching = false
+    document.querySelector('.search').classList.remove('active')
+    renderSuggestions()
+    clearSearch()
+}
 function getEvPos(ev) {
     var pos = {
         x: ev.offsetX / gElCanvas.width,
@@ -415,6 +438,7 @@ function addListeners() {
     addMouseListeners()
     //addTouchListeners()
     addSearchBarListeners()
+    addEditorListeners()
     window.addEventListener('resize', () => {
         if (document.body.classList.contains('editor')) {
             resizeCanvas()
@@ -424,9 +448,12 @@ function addListeners() {
     })
 
 }
+function addEditorListeners() {
+    gElTextInput.addEventListener('focusin', () => gIsInlineEditingLine = false)
+    window.addEventListener('keydown', updateTextInput)
+}
 function addSearchBarListeners() {
-    var elSearch = document.querySelector('#search-bar')
-    elSearch.addEventListener('click', toggleSearch)
+    gElSearchBarInput.addEventListener('click', toggleSearch)
     document.body.addEventListener('click', closeSearch)
 }
 function addMouseListeners() {

@@ -58,6 +58,7 @@ function setFilter(filter) {
 }
 // MEMES
 function updateMemeText(text) {
+    console.log("🚀 ~ file: meme-service.js ~ line 61 ~ updateMemeText ~ text", text)
     gMeme.lines[gMeme.selectedLineIdx].text = text
 }
 function alignLine(alignment) {
@@ -181,8 +182,6 @@ function createImgs() {
         gImgs = imgs
     }
 }
-
-
 function addUserImage(img, keywords = ['user created']) {
     var imgObj = {
         id: gImgs.length + 1,
