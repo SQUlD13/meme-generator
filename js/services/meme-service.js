@@ -53,7 +53,6 @@ function getKeywords() {
     return words
 }
 function setFilter(filter) {
-    console.log('setting filter to', filter)
     gFilter = filter.toLowerCase()
 }
 // MEMES
@@ -64,7 +63,6 @@ function alignLine(alignment) {
     var currentAlignment = gMeme.lines[gMeme.selectedLineIdx].align
     if (currentAlignment === undefined) gMeme.lines[gMeme.selectedLineIdx].align = alignment
     else {
-        console.log('currentAlignment', currentAlignment, 'alignment', alignment);
         if (currentAlignment === alignment) gMeme.lines[gMeme.selectedLineIdx].align = undefined
         else gMeme.lines[gMeme.selectedLineIdx].align = alignment
     }
@@ -204,19 +202,3 @@ function loadImageFromInput(ev, addUserImage) {
     reader.readAsDataURL(ev.target.files[0])
 }
 
-
-function getEvPos(ev) {
-    var pos = {
-        x: ev.offsetX,
-        y: ev.offsetY
-    }
-    if (TOUCH_EVS.includes(ev.type)) {
-        ev.preventDefault()
-        ev = ev.changedTouches[0]
-        pos = {
-            x: ev.pageX - ev.target.offsetLeft - ev.target.clientLeft,
-            y: ev.pageY - ev.target.offsetTop - ev.target.clientTop
-        }
-    }
-    return pos
-}

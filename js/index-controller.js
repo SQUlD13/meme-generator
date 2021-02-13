@@ -71,7 +71,6 @@ function onTextInput(elTextInput) {
 function updateTextInput(ev) {
     const regex = /^[a-zA-Z{1}]$/
     if (gIsInlineEditingLine) {
-        console.log("🚀 ~ file: index-controller.js ~ line 84 ~ updateTextInput ~ gCapitalize", ev.keyCode)
         if (ev.keyCode === 8) {
             if (gKeyboardInputs) gKeyboardInputs = gKeyboardInputs.slice(0, gKeyboardInputs.length - 1);
             else {
@@ -82,13 +81,11 @@ function updateTextInput(ev) {
         else if (ev.keyCode === 32) { ev.preventDefault(); gKeyboardInputs += ' ' }
         else if (ev.key.match(regex)) {
             if (gCapitalize) {
-                console.log('adding capitalized letter')
                 gKeyboardInputs += ev.key.toUpperCase()
             }
             else { gKeyboardInputs += ev.key }
         }
         else if (ev.keyCode === 16) {
-            console.log('shift pressed')
             gCapitalize = true;
             return
         }
@@ -111,7 +108,6 @@ function onBorderColorChange(elColorInput) {
 
 //EVENTS
 function onFileUploadClick(ev) {
-    console.log('clicking thing!')
     ev.preventDefault()
     ev.stopPropagation()
     var elInput = document.getElementById('file-input')
@@ -136,17 +132,18 @@ function onSearch(elSearchBar) {
     }
 }
 function onDown(ev) {
-    const pos = getEvPos(ev)
+    var pos = getEvPos(ev)
     if (gIsDragging) return
-    var line = findClickedLine(ev)
+    var line = findClickedLine(pos)
     if (line) {
         gLastPos = pos
         gIsDragging = true
     }
 }
 function onMove(ev) {
+    var pos = getEvPos(ev)
+
     if (gIsDragging) {
-        const pos = getEvPos(ev)
         var { x, y } = pos
         var line = getSelectedLine()
         if (line.align === undefined) {
@@ -156,10 +153,14 @@ function onMove(ev) {
         }
         var dX = (x - gLastPos.x)
         var dY = (y - gLastPos.y)
-        line.x += dX; line.y += dY;
-        drawCanvas()
-        placeLineModal()
-        gLastPos = pos
+        var rect = gElCanvas.getBoundingClientRect()
+        if (line.x + dX > 0 && line.x + dX < 1 && line.y + dY > 0 && line.y + dY < 1) {
+            line.x += dX; line.y += dY;
+            drawCanvas()
+            placeLineModal()
+            gLastPos = pos
+        }
+
     }
 }
 function onUp() {
@@ -422,11 +423,10 @@ function getSavedMemeHTML(meme) {
 }
 
 //OTHER
-function findClickedLine(ev) {
+function findClickedLine(pos) {
     var meme = getMeme()
     var elText = document.querySelector('.line-modal-content')
     var textContent = elText.innerHTML
-    const pos = getEvPos(ev)
     for (let i = 0; i < meme.lines.length; i++) {
         var line = meme.lines[i]
         elText.innerHTML = line.text
@@ -470,16 +470,17 @@ function getEvPos(ev) {
     if (TOUCH_EVS.includes(ev.type)) {
         ev.preventDefault()
         ev = ev.changedTouches[0]
+        var rect = gElCanvas.getBoundingClientRect()
         pos = {
-            x: ev.pageX - ev.target.offsetLeft - ev.target.clientLeft,
-            y: ev.pageY - ev.target.offsetTop - ev.target.clientTop
+            x: (ev.pageX - rect.left) / gElCanvas.width,
+            y: (ev.pageY - rect.top) / gElCanvas.height
         }
     }
     return pos
 }
 function addListeners() {
     addMouseListeners()
-    //addTouchListeners()
+    addTouchListeners()
     addSearchBarListeners()
     addEditorListeners()
     window.addEventListener('resize', () => {
@@ -507,10 +508,10 @@ function addMouseListeners() {
     gElCanvas.addEventListener('mousemove', onMove)
     gElCanvas.addEventListener('mousedown', onDown)
     gElCanvas.addEventListener('mouseup', onUp)
-    gElCanvas.addEventListener('mouseout', () => gIsDragging = false)
 }
-// function addTouchListeners() {
-//     gElCanvas.addEventListener('touchmove', onMove)
-//     gElCanvas.addEventListener('touchstart', onDown)
-//     gElCanvas.addEventListener('touchend', onUp)
-// }
+function addTouchListeners() {
+    gElCanvas.addEventListener('touchmove', onMove)
+    gElCanvas.addEventListener('touchstart', onDown)
+    gElCanvas.addEventListener('touchend', onUp)
+    gElCanvas.addEventListener('touchcancel', () => gIsDragging = false)
+}

@@ -276,7 +276,7 @@ body.editor .main-screen{
     transition:opacity .6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .controls{
-    margin-left:20px;
+    margin-left:5px 20px;
     width:85%;
     height:100%;
     font-size: 1.5rem;
@@ -326,7 +326,7 @@ label{
 }
 .slider-label{
     background:darkgray;
-    padding:15px;
+    padding:5px;
     border-radius: 5px;
 }
 
@@ -389,7 +389,10 @@ footer a:first-of-type{
     .main-container{
         max-width: 300px;
     }
-
+    .controls{
+        width:100vw;
+        margin:5px 0;
+    }
     .meme-editor{
         flex-direction:column;
     }
