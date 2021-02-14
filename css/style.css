@@ -455,11 +455,10 @@ footer a:first-of-type{
 }
 small a:first-of-type::before{
     position:absolute;
-    font-family: 'Materia l Icons';
+    font-family: 'Material Icons';
     content:'\e316';
     opacity:0;
     bottom:10px;
-    /* display:none; */
 }
 small a:first-of-type:hover::before{
     transform: translateY(-15px);
