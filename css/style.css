@@ -8,7 +8,7 @@
 /* INIT */
 :root{
     --background-color:#222;
-    --main-color:rgb(31, 180, 131);
+    --main-color:rgb(42, 173, 112);
     --text-color:snow;
     --box-shadow:4px 5px 9px 2px rgba(0, 0, 0, 0.555)
 
@@ -127,7 +127,7 @@ nav ul li a{
     width:50%;
 }
 .search-bar-container [type="text"]{
-    z-index: 1;
+    z-index: 2;
     width:100%;
 }
 .search-btn{
@@ -141,6 +141,7 @@ nav ul li a{
 }
 .search .autocom-box{
     position:absolute;
+    z-index: 1;
     width:100%;
     background: #f1f1f1;
     top:1em;
@@ -201,20 +202,41 @@ nav ul li a{
 .image-gallery{
     display:grid;
     grid-template-columns: repeat(auto-fill, 250px);
-    grid-auto-rows: auto;
+    grid-auto-rows:250px;
     grid-gap: 20px 10px;
-    margin-block-end: 20px;
+    grid-auto-flow: dense;
+    margin: 20px 0 ;
 }
 .img-container{
     position:relative;
 }
 .meme-img{
     object-fit: cover;
-    height:250px;
-    aspect-ratio: 1;
+    width:100%;
+    height:100%;
     border-radius: 15px;
     box-shadow: var(--box-shadow);
+    -webkit-column-break-inside: avoid;
+    -moz-column-break-inside: avoid;
+
 }
+.landscape{
+    grid-column: auto / span 2;
+}
+.portrait{
+    grid-row: auto / span 2;
+}
+#saved-memes{
+    overflow-y: hidden;
+    display: flex;
+    height:0;
+    transition:height 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+body.saved-memes #saved-memes{
+    height:300px;
+    transition:height 1s cubic-bezier(0.215, 0.610, 0.355, 1);
+}
+
 .img-modal{
     opacity:0;
     position:absolute;
@@ -222,15 +244,41 @@ nav ul li a{
     width:100%;
     border-radius: 15px;
     background: rgba(34, 34, 34, 0.178);
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(15px) grayscale(.8);
     transition:opacity .3s ease-out
 }
-.img-modal:hover{
+.img-modal.active{
     opacity:1;
     transition:opacity .3s ease-in
 }
+
 .img-btn{
+    user-select: none;
+    pointer-events: none;
     width:50%;
+    height:20%;
+}
+.img-modal.active .img-btn{
+    pointer-events: all;
+}
+.img-open-btn{
+    background: var(--main-color);
+    transition: filter .2s ease-out;
+}
+.img-open-btn:hover{
+    filter:hue-rotate(180deg);
+    transition: filter .2s ease-in;
+}
+.img-del-btn{
+    background: firebrick;
+    z-index: 1;
+    height:20%;
+    transition: filter .2s ease-out;
+}
+.img-del-btn:hover{
+    background: firebrick;
+    filter:brightness(25%);
+    transition: filter .2s ease-in;
 }
 
 .image-row{
@@ -312,10 +360,10 @@ body.editor .main-screen{
     height:100%;
     width:100%;
 }
-[id=font-size]{
+#font-size{
     height:60px;
 }
-[id=font-family]{
+#font-family{
     height:100%;
     border:0;
     border-radius: 0 5px 5px 0;
@@ -332,6 +380,7 @@ label{
 
 
 .save-btn{
+    height:100%;
     background:var(--main-color);
     transition: filter .5s ease-in, border-color .7s linear;
 }
@@ -404,7 +453,7 @@ footer a:first-of-type{
         width:90px;
     }
     .meme-img{
-        height:150px;
+        width:150px;
     }
     .image-gallery{
         grid-template-columns: repeat(auto-fill,150px);

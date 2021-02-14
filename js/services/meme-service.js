@@ -189,6 +189,28 @@ function addUserImage(img, keywords = ['user created']) {
     gImgs.push(imgObj)
     saveDB()
 }
+function findClickedLine(pos) {
+    var meme = getMeme()
+    var elText = document.querySelector('.line-modal-content')
+    var textContent = elText.innerHTML
+    for (let i = 0; i < meme.lines.length; i++) {
+        var line = meme.lines[i]
+        elText.innerHTML = line.text
+        var rect = elText.getBoundingClientRect()
+        var halfRectWidth = (rect.width / gElCanvas.width) / 2
+        if (pos.x > line.x - halfRectWidth && pos.x < line.x + halfRectWidth && pos.y < line.y && pos.y > line.y - (line.size / gElCanvas.height)) {
+            gElTextInput.value = line.text
+            gKeyboardInputs = line.text
+            gIsInlineEditingLine = true
+            elText.innerHTML = textContent
+            setMemeSelectedLine(i)
+            return line
+        }
+    }
+    gIsInlineEditingLine = false
+    elText.innerHTML = textContent
+    return false
+}
 
 function loadImageFromInput(ev, addUserImage) {
     var reader = new FileReader()

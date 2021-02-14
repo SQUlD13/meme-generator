@@ -17,7 +17,8 @@
             </div>
             <nav>
                 <ul class="clean-list inline-flex">
-                    <li><a class="center" href="#saved-image-gallery">Saved Images</a></li>
+                    <li><a class="center" href="#saved-image-gallery" onclick="toggleSavedMemes()">Saved Images</a>
+                    </li>
                 </ul>
             </nav>
         </div>
@@ -26,10 +27,10 @@
         <div class="search-bar-container margin-auto">
             <form class="flex column" onsubmit="onSearchSubmit(event)">
                 <input type="text" name="search-bar" id="search-bar" placeholder="Search..." oninput="onSearch(this)"
-                    autocomplete="off" readonly="true" custom>
+                    autocomplete="off" readonly="true" custom />
                 <div class="autocom-box"></div>
                 <button class="btn search-btn mi mi-search" onmousedown="onFileUploadClick(event)"></button>
-                <input hidden type="file" name="file-input" id="file-input" onchange="onFileUpload(event,this)">
+                <input hidden type="file" name="file-input" id="file-input" onchange="onFileUpload(event,this)" />
             </form>
         </div>
     </section>
@@ -44,7 +45,7 @@
         </div>
         <div class="controls flex column justify-center">
             <input class="controls-row flex-1 margin-auto" type="text" name="text-input" id="text-input"
-                placeholder="Text line" oninput="onTextInput(this)">
+                placeholder="Text line" oninput="onTextInput(this)" />
             <div class="controls-row center flex-1 margin-auto">
                 <div class="control-group flex flex-1 space-evenly align-center">
                     <button class="btn control-btn center" onclick="onToggleLine()">
@@ -65,7 +66,7 @@
                         <label for="font-size"><span>40</span>px</label>
                     </div>
                     <input class="flex flex-1" type="range" name="font-size" id="font-size" min="0" max="150"
-                        oninput="onFontSizeChange(this)" value="40">
+                        oninput="onFontSizeChange(this)" value="40" />
                 </div>
             </div>
             <div class="controls-row center flex-1 margin-auto">
@@ -75,7 +76,7 @@
                         <label for="border-size"><span>2</span>px</label>
                     </div>
                     <input class="flex flex-1" type="range" name="border-size" id="border-size" min="0" max="10"
-                        oninput="onBorderSizeChange(this)" value="2">
+                        oninput="onBorderSizeChange(this)" value="2" />
                 </div>
             </div>
             <div class="controls-row center flex-1 margin-auto">
@@ -95,11 +96,11 @@
                 <div class="control-group inline-flex flex-1 space-evenly align-center">
                     <button class="btn control-btn mi mi-text-color" onmousedown="">
                         <input class="hidden-color" type="color" name="text-color" id="text-color"
-                            oninput="onTextColorChange(this)" value="#ffffff">
+                            oninput="onTextColorChange(this)" value="#ffffff" />
                     </button>
                     <button class="btn control-btn mi mi-border-color" onmousedown="">
                         <input class="hidden-color" type="color" name="border-color" id="border-color"
-                            oninput="onBorderColorChange(this)">
+                            oninput="onBorderColorChange(this)" />
                     </button>
                 </div>
                 <div class="control-group inline-flex flex-1 justify-center align-center">
@@ -118,8 +119,8 @@
             </div>
         </div>
     </section>
+    <section id="saved-memes" class="image-row"></section>
     <section id="image-gallery" class="image-gallery main-container margin-auto"></section>
-    <section id="saved-image-gallery" class="image-row"></section>
 
     <footer class="flex column space-evenly align-center">
         <small class="flex column space-between align-center">

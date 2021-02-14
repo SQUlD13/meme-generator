@@ -107,6 +107,10 @@ function onBorderColorChange(elColorInput) {
 }
 
 //EVENTS
+function toggleSavedMemes() {
+    document.body.classList.toggle('saved-memes')
+}
+
 function onFileUploadClick(ev) {
     ev.preventDefault()
     ev.stopPropagation()
@@ -219,6 +223,7 @@ function onDownload(ev, memeId) {
 function onSave() {
     var imgData = gElCanvas.toDataURL("image/jpeg")
     addMeme(imgData)
+    document.body.classList.add('saved-memes')
     saveDB()
     renderSavedImages()
 }
@@ -382,25 +387,25 @@ function renderImages() {
         strHTML += getImageHTML(img.id)
     });
     elGallery.innerHTML = strHTML
+    assignAspectRatioClasses()
 }
 function getImageHTML(idx) {
     var imgObj = getImageById(idx)
+    var DeleteBtn = /*html*/`<button class="btn img-btn img-del-btn"  onclick="onImgDelete(${idx})">Delete</button>`
+    var strHTML = /*html*/`<div class="img-container">
+        <div class="img-modal flex column align-center space-evenly" onclick="toggleImageModal(this)">
+        <button class="btn img-btn img-open-btn"  onclick="onImgSelect(${idx})">Open</button>`
     if (imgObj.userImage) {
-        var strHTML = /*html*/`<div class="img-container">
-        <div class="img-modal flex column space-evenly align-center">
-        <button class="btn img-btn"  onclick="onImgDelete(${idx})">Delete</button>
-        <button class="btn img-btn"  onclick="onImgSelect(${idx})">Open</button>
-        </div>
+        strHTML += DeleteBtn
+    }
+    strHTML += /*html*/`</div>
         <img class="meme-img" id="meme-${idx}" src="${imgObj.url}" alt="${imgObj.keywords[0]} meme">
     </div>`
-    } else {
-        strHTML = `<img class="meme-img" id="meme-${idx}" src="${imgObj.url}" alt="${imgObj.keywords[0]} meme" onclick="onImgSelect(${idx})"></img>`
-    }
     return strHTML
 }
 
 function renderSavedImages() {
-    var elGallery = document.querySelector('#saved-image-gallery')
+    var elGallery = document.querySelector('#saved-memes')
     var memes = getMemes()
     var strHTML = ''
     memes.forEach(meme => {
@@ -411,7 +416,7 @@ function renderSavedImages() {
 function getSavedMemeHTML(meme) {
     var strHTML = /*html*/ `<div class="saved-image" onclick="setMemeToCanvas('${meme.id}')">
     <img class="meme-img" src="${meme.imgData}" alt="saved meme">
-    <div class="flex space-evenly">
+    <div class="flex space-evenly align-center">
     <a href="${meme.imgData}" download="meme - ${meme.id}">
          <button class="btn save-btn")">Download</button>
     </a>
@@ -422,28 +427,28 @@ function getSavedMemeHTML(meme) {
     return strHTML
 }
 
+
+function assignAspectRatioClasses() {
+    var imgs = document.querySelectorAll('.meme-img')
+    imgs.forEach((img) => {
+        if (Math.abs(img.naturalWidth - img.naturalHeight) < 20) return
+        else if (img.naturalWidth - img.naturalHeight < 0) img.parentElement.classList.add('portrait')
+        else img.parentElement.classList.add('landscape')
+    })
+}
+
 //OTHER
-function findClickedLine(pos) {
-    var meme = getMeme()
-    var elText = document.querySelector('.line-modal-content')
-    var textContent = elText.innerHTML
-    for (let i = 0; i < meme.lines.length; i++) {
-        var line = meme.lines[i]
-        elText.innerHTML = line.text
-        var rect = elText.getBoundingClientRect()
-        var halfRectWidth = (rect.width / gElCanvas.width) / 2
-        if (pos.x > line.x - halfRectWidth && pos.x < line.x + halfRectWidth && pos.y < line.y && pos.y > line.y - (line.size / gElCanvas.height)) {
-            gElTextInput.value = line.text
-            gKeyboardInputs = line.text
-            gIsInlineEditingLine = true
-            elText.innerHTML = textContent
-            setMemeSelectedLine(i)
-            return line
-        }
-    }
-    gIsInlineEditingLine = false
-    elText.innerHTML = textContent
-    return false
+
+function toggleImageModal(elImageModal) {
+    if (elImageModal.classList.contains('active')) { elImageModal.classList.remove('active'); return }
+    closeImageModals()
+    elImageModal.classList.toggle('active')
+}
+function closeImageModals() {
+    var modals = document.querySelectorAll('.img-modal')
+    modals.forEach(modal => {
+        modal.classList.remove('active')
+    });
 }
 function toggleEditor() {
     document.body.classList.toggle('editor')
