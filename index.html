@@ -9,7 +9,7 @@
     <title>Meme Generator</title>
 </head>
 
-<body onload="onInit()">
+<body onload="onInitGallery();onInitEditor()">
     <header id="header">
         <div class="main-container flex space-between align-center margin-auto">
             <div class="logo">
@@ -30,7 +30,7 @@
                     autocomplete="off" readonly="true" custom />
                 <div class="autocom-box"></div>
                 <button class="btn search-btn mi mi-search" onmousedown="onFileUploadClick(event)"></button>
-                <input hidden type="file" name="file-input" id="file-input" onchange="onFileUpload(event,this)" />
+                <input hidden type="file" name="file-input" id="file-input" onchange="onFileUpload(event)" />
             </form>
         </div>
     </section>
@@ -114,17 +114,21 @@
                 </div>
             </div>
             <div class="controls-row center flex-1 margin-auto">
-                <button class="btn control-btn wide-btn center" onclick="toggleEditor()">Back</button>
-                <button class="btn control-btn wide-btn center save-btn" onclick="onSave()">Save</button>
+                <button class="btn final-btn center" onclick="toggleEditor()">Back</button>
+                <button class="btn final-btn save-btn center " onclick="onSave()">Save</button>
+                <a class="center" href="" download="" onclick="onEditorDownload(this)">
+                    <button class="btn final-btn download-btn center ">Download</button>
+                </a>
             </div>
         </div>
     </section>
     <section id="saved-memes" class="image-row"></section>
     <section id="image-gallery" class="image-gallery main-container margin-auto"></section>
 
-    <footer class="flex column space-evenly align-center">
+    <footer class="flex column justify-center align-center">
         <small class="flex column space-between align-center">
-            <a href="#header">Back To Top</a>
+            <a class="flex column align-center" href="#header">Back To Top
+            </a>
             <p>Created by SQUID13 (Anton Zebnitski)</p>
             <a href="https://github.com/SQUlD13/meme-generator">Github Repository</a>
         </small>
@@ -133,8 +137,10 @@
     </footer>
     <script src="js/services/util-service.js"></script>
     <script src="js/services/storage-service.js"></script>
-    <script src="js/services/meme-service.js"></script>
-    <script src="js/index-controller.js"></script>
+    <script src="js/services/gallery-service.js"></script>
+    <script src="js/services/editor-service.js"></script>
+    <script src="js/gallery-controller.js"></script>
+    <script src="js/editor-controller.js"></script>
 </body>
 
 </html>

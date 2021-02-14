@@ -1,10 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@font-face{
+    font-family:'Lobster two';
+    font-style:normal;
+    font-weight:400;
+    src: url('../src/fonts/Lobster_Two/LobsterTwo-Regular.ttf');
+}
 @font-face{
     font-family:'Material Icons';
     font-style:normal;
     font-weight:400;
     src: url('../src/fonts/MaterialIcons-Regular.ttf');
 }
+
 /* INIT */
 :root{
     --background-color:#222;
@@ -70,6 +76,7 @@ label{
     background: var(--main-color);
     /* transform:translate(3px,3px);
     box-shadow: 2px 2px 0 4px rgba(0, 0, 0, 0.5); */
+    border-color: white;
     transition: background .15s ease-in, filter .05s ease-out;
 
 }
@@ -110,9 +117,7 @@ header h1{
     font-size:2.5em;
 }
 nav ul li a{
-    height:60px;
-    font-size:1.5em;
-    padding:10px;
+    font-size:1.2em;
 }
 
 
@@ -338,6 +343,11 @@ body.editor .main-screen{
 .controls-row{
     width:85%;
 }
+.controls-row a{
+    background: none;
+    height:100%;
+    margin:0;
+}
 .control-btn{
     position:relative;
     width:60px;
@@ -345,15 +355,14 @@ body.editor .main-screen{
     border-radius: 5px;
     margin:5px;
 }
+
 .control-group{
     height:60%;
 }
 .control-btn.active{
     background: var(--main-color);
 }
-.wide-btn{
-    width:120px;
-}
+
 .hidden-color{
     opacity: 0;
     position:absolute;
@@ -378,14 +387,25 @@ label{
     border-radius: 5px;
 }
 
-
-.save-btn{
+.final-btn{
     height:100%;
+    margin:5px 5px;
+}
+.save-btn{
     background:var(--main-color);
-    transition: filter .5s ease-in, border-color .7s linear;
+    transition: filter .5s ease-in;
 }
 .save-btn:hover{
     filter:hue-rotate(130deg);
+    transition: filter .5s ease-in;
+}
+.download-btn{
+    background:rgb(235, 191, 110);
+    transition: filter .5s ease-in, border-color .7s linear;
+}
+.download-btn:hover{
+    background:rgb(235, 191, 110);
+    filter:hue-rotate(45deg);
     transition: filter .5s ease-in, border-color .7s linear;
     border-color: white;
 }
@@ -411,34 +431,56 @@ label{
     transform:translate(-50%,-100%);
     height:1em;
 }
-.line-modal:hover{
-    filter:hue-rotate(90deg)
-}
 .line-modal-content{
     border: 3px solid var(--main-color);
-    border-radius: 5px;
+    border-radius: 35px;
     padding:15px;
 }
 
 
 /* FOOTER */
 footer{
+    position:relative;
+    font-family: Arial, Helvetica, sans-serif;
     background: var(--main-color);
     height:150px;
     width:100%;
     bottom:0;
 }
+small{
+    position:absolute;
+}
 footer a:first-of-type{
     font-size: 1.2em;
+}
+small a:first-of-type::before{
+    position:absolute;
+    font-family: 'Materia l Icons';
+    content:'\e316';
+    opacity:0;
+    bottom:10px;
+    /* display:none; */
+}
+small a:first-of-type:hover::before{
+    transform: translateY(-15px);
+    opacity:1;
+    display:block;
+    transition: transform .2s ease-in, opacity .2s ease-in;
 }
 
 
 /* MEDIA QUERRIES */
 @media (max-width:1280px){
     .main-container{
-        max-width: 300px;
+        max-width: 650px;
     }
-    .controls{
+    .image-gallery{
+    grid-template-columns: repeat(auto-fill, 150px);
+    grid-auto-rows:150px;
+    }
+}
+@media (max-width:1100px){
+    .meme-editor .controls{
         width:100vw;
         margin:5px 0;
     }
@@ -449,19 +491,10 @@ footer a:first-of-type{
         height:45px;
         width:45px;
     }
-    .wide-btn{
-        width:90px;
-    }
-    .meme-img{
-        width:150px;
-    }
-    .image-gallery{
-        grid-template-columns: repeat(auto-fill,150px);
-        max-width:100% !important;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
+}
+@media (max-width:760px){
+    .main-container{
+        max-width: 320px
     }
 }
 
@@ -550,7 +583,8 @@ footer a:first-of-type{
     content:'\e313'
 }
 .mi-up::before{
-    content:'\e316'
+    content:'\e316';
+    color:snow;
 }
 .mi-format-font-size::before{
     content:'\e245';
