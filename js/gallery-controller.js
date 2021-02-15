@@ -159,7 +159,7 @@ function addSearchBarListeners() {
 //DOM Manipulation
 function toggleImageModal(elImageModal) {
     if (elImageModal.classList.contains('active')) { elImageModal.classList.remove('active'); return }
-    //closeImageModals()
+    closeImageModals()
     elImageModal.classList.toggle('active')
 }
 function closeImageModals() {
