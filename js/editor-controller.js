@@ -104,6 +104,7 @@ function onSave() {
     document.body.classList.add('saved-memes')
     saveDB()
     renderSavedImages()
+    toggleEditor()
 }
 
 // CANVAS
